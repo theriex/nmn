@@ -43,6 +43,24 @@ var app = {},  //Global container for application level funcs and values
     }
 
 
+    function loadFonts () {
+        //google fonts can occasionally be slow or unresponsive.  Load here to
+        //avoid holding up app initialization
+        var elem = document.createElement("link");
+        elem.rel = "stylesheet";
+        elem.type = "text/css";
+        elem.href = "//fonts.googleapis.com/css?family=Roboto";
+        document.head.appendChild(elem);
+        var elem = document.createElement("link");
+        elem.rel = "stylesheet";
+        elem.type = "text/css";
+        elem.href = "//fonts.googleapis.com/css?family=Open+Sans";
+        document.head.appendChild(elem);
+        //loading the fonts can change the height of the title and tabs
+        setTimeout(adjustHeight, 800);
+    }
+
+
     app.tabsel = function (selidx) {
         pages.forEach(function (pg, idx) {
             if(idx === selidx) {
@@ -59,6 +77,7 @@ var app = {},  //Global container for application level funcs and values
         adjustHeight();
         makeTabs();
         makePages();
+        setTimeout(loadFonts, 200);
     };
 
 }());
