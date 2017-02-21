@@ -10,7 +10,7 @@ var app = {},  //Global container for application level funcs and values
     var pages = [{id:"artdiv", name:"Notable Articles",
                   content:"<div id=\"membicdiv\" style=\"height:90vh;\"><iframe id=\"membiciframe\" src=\"https://membic.com?view=coop&coopid=6385940616445952&css=none&site=notmynormal.org\" style=\"position:relative;height:100%;width:100%\" seamless=\"seamless\" frameborder=\"0\"/></iframe></div>"},
                  {id:"caldiv", name:"UMB Calendar",
-                  content:"<iframe src=\"https://calendar.google.com/calendar/embed?src=notmynormal.org%40gmail.com&ctz=America/New_York\" style=\"border: 0\" width=\"800\" height=\"600\" frameborder=\"0\" scrolling=\"no\" id=\"califrame\"></iframe>"}];
+                  content:"<iframe src=\"https://calendar.google.com/calendar/embed?src=notmynormal.org%40gmail.com&ctz=America/New_York\" style=\"border: 0\" width=\"$WIDTH\" height=\"600\" frameborder=\"0\" scrolling=\"no\" id=\"califrame\"></iframe>"}];
 
 
     function makeTabs () {
@@ -25,11 +25,14 @@ var app = {},  //Global container for application level funcs and values
 
 
     function makePages () {
-        var html = [];
+        var w = 800, html = [];
+        w = Math.min(w, jt.byId("contentdiv").offsetWidth);
+        w = Math.max(w, 500);  //calendar crunches bad below this
         pages.forEach(function (pg, idx) {
+            var pgcont = pg.content.replace(/\$WIDTH/g, String(w));
             html.push(["div", {id: pg.id,
                                cla: (idx? "pagediv" : "selpagediv")},
-                       pg.content]); });
+                       pgcont]); });
         jt.out("pagecontentdiv", jt.tac2html(html));
     }
 
