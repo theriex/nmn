@@ -8,7 +8,7 @@ var app = {},  //Global container for application level funcs and values
     "use strict";
 
     var pages = [{id:"artdiv", name:"Notable Articles",
-                  content:"<div id=\"membicdiv\" style=\"height:90vh;\"><iframe id=\"membiciframe\" src=\"https://membic.com?view=coop&coopid=6385940616445952&css=none&site=notmynormal.org\" style=\"position:relative;height:100%;width:100%\" seamless=\"seamless\" frameborder=\"0\"/></iframe></div>"},
+                  content:"<iframe id=\"membiciframe\" src=\"https://membic.com?view=coop&coopid=6385940616445952&css=none&site=notmynormal.org\" style=\"position:relative;height:100%;width:100%\" seamless=\"seamless\" frameborder=\"0\"/></iframe>"},
                  {id:"caldiv", name:"UMB Calendar",
                   content:"<iframe src=\"https://calendar.google.com/calendar/embed?src=notmynormal.org%40gmail.com&ctz=America/New_York\" style=\"border: 0\" width=\"$WIDTH\" height=\"600\" frameborder=\"0\" scrolling=\"no\" id=\"califrame\"></iframe>"}];
 
