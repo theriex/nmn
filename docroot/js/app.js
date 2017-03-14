@@ -7,7 +7,9 @@ var app = {},  //Global container for application level funcs and values
 (function () {
     "use strict";
 
-    var pages = [{id:"artdiv", name:"Notable Articles",
+    var pages = [{id:"docdiv", name:"Not My Normal",
+                  content:"about.html"},
+                 {id:"artdiv", name:"Notable Articles",
                   content:"<iframe id=\"membiciframe\" src=\"https://membic.com?view=coop&coopid=6385940616445952&css=none&site=notmynormal.org\" style=\"position:relative;height:100%;width:100%\" seamless=\"seamless\" frameborder=\"0\"/></iframe>"},
                  {id:"caldiv", name:"UMB Calendar",
                   content:"<iframe src=\"https://calendar.google.com/calendar/embed?src=notmynormal.org%40gmail.com&ctz=America/New_York\" style=\"border: 0\" width=\"$WIDTH\" height=\"600\" frameborder=\"0\" scrolling=\"no\" id=\"califrame\"></iframe>"}];
@@ -16,11 +18,29 @@ var app = {},  //Global container for application level funcs and values
     function makeTabs () {
         var html = [];
         pages.forEach(function (pg, idx) {
-            html.push(["div", {id: pg.id + "tab", 
-                               cla: (idx? "tabdiv" : "seltabdiv"),
-                               onclick: jt.fs("app.tabsel(" + idx + ")")},
-                       pg.name]); });
+            if(!idx) {
+                jt.out("titlediv", jt.tac2html(
+                    ["a", {href:"#about", onclick:jt.fs("app.tabsel(0)")},
+                     pg.name])); }
+            else {
+                html.push(["div", {id:pg.id + "tab", 
+                                   cla:(idx? "tabdiv" : "seltabdiv"),
+                                   onclick:jt.fs("app.tabsel(" + idx + ")")},
+                           pg.name]); } });
         jt.out("tabcontdiv", jt.tac2html(html));
+    }
+
+
+    function displayDocContent (filename, html) {
+        var idx, title, bodystart = "<body>";
+        if(!html || !html.trim()) {
+            html = url + " contains no text"; }
+        idx = html.indexOf(bodystart);
+        if(idx > 0) {
+            html = html.slice(idx + bodystart.length,
+                              html.indexOf("</body")); }
+        jt.out("docdiv", jt.tac2html(
+            ["div", {cla:"docframediv"}, html]));
     }
 
 
@@ -30,10 +50,25 @@ var app = {},  //Global container for application level funcs and values
         w = Math.max(w, 500);  //calendar crunches bad below this
         pages.forEach(function (pg, idx) {
             var pgcont = pg.content.replace(/\$WIDTH/g, String(w));
+            if(pgcont.endsWith(".html")) {
+                pgcont = jt.tac2html(
+                    ["Fetching ",
+                     ["a", {href:"html/" + pgcont}, pgcont],
+                     "..."]); }
             html.push(["div", {id: pg.id,
                                cla: (idx? "pagediv" : "selpagediv")},
                        pgcont]); });
         jt.out("pagecontentdiv", jt.tac2html(html));
+        pages.forEach(function (pg, idx) {
+            if(pg.content.endsWith(".html")) {
+                jt.request("GET", "html/" + pg.content, null,
+                           function (resp) {
+                               displayDocContent(pg.content, resp); },
+                           function (code, errtxt) {
+                               var txt = "Error fetching " + pg.content +
+                                   " " + code + ": " + errtxt;
+                               displayDocContent(pg.content, txt); },
+                           jt.semaphore("makePages" + pg.content)); } });
     }
 
 
@@ -66,12 +101,12 @@ var app = {},  //Global container for application level funcs and values
 
     app.tabsel = function (selidx) {
         pages.forEach(function (pg, idx) {
-            if(idx === selidx) {
-                jt.byId(pg.id + "tab").className = "seltabdiv";
-                jt.byId(pg.id).className = "selpagediv"; }
-            else {
-                jt.byId(pg.id + "tab").className = "tabdiv";
-                jt.byId(pg.id).className = "pagediv"; } });
+            var cn = (idx === selidx)? "selpagediv" : "pagediv";
+            jt.byId(pg.id).className = cn; });
+        pages.forEach(function (pg, idx) {
+            var cn = (idx === selidx)? "seltabdiv" : "tabdiv";
+            if(idx) {
+                jt.byId(pg.id + "tab").className = cn; } });
     };
 
 
