@@ -24,7 +24,8 @@ button { border: 2px solid #666666; border-radius:5px; cursor:pointer;
 
 #outercontentdiv { padding:10px; margin:0px; height:98vh; }
 #contentdiv { position:relative; margin:0px; height:100%; 
-  background:#d4d6d6; border-radius:10px; }
+  background:#d4d6d6 url("../img/nmnback.png") no-repeat fixed center;
+  background-size:cover; border-radius:10px; }
 #titlediv { font-size:36px; text-align:center; 
   color:#520000; padding:4px 0px 3px 0px; 
   font-family: "Roboto", "Helvetica", sans-serif;
